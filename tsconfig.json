@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "resolvePackageJsonExports": true,
+    "module": "commonjs",
+//    "moduleResolution": "commonjs",
+//    "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
@@ -21,7 +21,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "strictNullChecks": true,
-    "esModuleInterop": true
-  }
+    "useDefineForClassFields": false
+
+    //    "strictPropertyInitialization": true,
+//    "strict": true
+  },
+  "include": ["src/**/*", "test/**/*"]
 }

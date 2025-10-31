@@ -4,6 +4,8 @@ import { BcryptService } from '../bcrypt.service';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { User } from '../../user.entity';
 import { BadRequestException } from '@nestjs/common';
+import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
 
 export class CreateUserCommand {
   constructor(public dto: CreateUserDto) {}
@@ -23,9 +25,19 @@ export class CreateUserUserCase
 
     const userData = await this.usersRepository.findByLogin(login);
 
+    console.log(userData);
+
     if (userData) {
-      throw new BadRequestException();
-      // console.log(userData);
+      throw new DomainException({
+        code: DomainExceptionCode.BadRequest,
+        message: 'User with the same login already exists',
+        extensions: [
+          {
+            field: 'email',
+            message: 'invalid email',
+          },
+        ],
+      });
     }
     const passwordHash = await this.bcryptService.generationHash(password);
     const user = new User();
