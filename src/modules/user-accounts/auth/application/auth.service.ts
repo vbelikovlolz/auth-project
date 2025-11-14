@@ -55,14 +55,15 @@ export class AuthService {
     }
     return user;
   }
+
   async validateToken(token: string): Promise<any> {
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      return await this.jwtService.verifyAsync(token, {
         secret: this.userAccountConfig.refreshTokenSecret,
       });
-      return payload;
-    } catch (error) {
-      throw new Error('Invalid or expired token');
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      throw new Error('Invalid or expired token', e);
     }
   }
 }
