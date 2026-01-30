@@ -24,6 +24,7 @@ import { JwtStrategy } from './guards/bearer/jwt.strategy';
 import { JwtRtStrategy } from './guards/bearer/refresh-token/jwt.rt.strategy';
 import { DeleteDeviceUseCase } from './device/application/usecases/delete-device.usecase';
 import { UsersController } from './user/application/api/users.controller';
+import { UserAvatarsEntity } from './user/user.avatars.entity';
 
 const commandHandler = [
   //user
@@ -39,7 +40,10 @@ const commandHandler = [
 ];
 
 @Module({
-  imports: [CqrsModule, TypeOrmModule.forFeature([User, Device])],
+  imports: [
+    CqrsModule,
+    TypeOrmModule.forFeature([User, Device, UserAvatarsEntity]),
+  ],
   controllers: [AuthController, UsersController],
   providers: [
     ...commandHandler,

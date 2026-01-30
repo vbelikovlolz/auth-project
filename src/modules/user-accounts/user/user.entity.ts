@@ -24,7 +24,6 @@ export class User extends BaseEntity {
   @ApiProperty()
   public description: string;
 
-  @Column()
   @ApiProperty()
   @OneToMany(() => UserAvatarsEntity, (userAvatars) => userAvatars.userId)
   public avatars: UserAvatarsEntity[];

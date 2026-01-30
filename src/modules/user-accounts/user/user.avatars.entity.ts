@@ -11,4 +11,8 @@ export class UserAvatarsEntity extends BaseEntity {
   @Column()
   @ApiProperty()
   isActive: boolean;
+
+  @Column()
+  @ApiProperty()
+  url: string;
 }
