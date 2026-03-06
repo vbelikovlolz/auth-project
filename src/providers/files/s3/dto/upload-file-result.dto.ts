@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UploadFileResultDto {
   @ApiProperty({
-    example: '/profiles/avatars',
+    example: '/users/avatars',
   })
   @IsString()
   @IsNotEmpty()

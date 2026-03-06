@@ -25,11 +25,17 @@ import { JwtRtStrategy } from './guards/bearer/refresh-token/jwt.rt.strategy';
 import { DeleteDeviceUseCase } from './device/application/usecases/delete-device.usecase';
 import { UsersController } from './user/application/api/users.controller';
 import { UserAvatarsEntity } from './user/user.avatars.entity';
+import { UploadUserAvatarUseCase } from './user/application/usecases/upload-user-avatar.usecase';
+import { DeleteUserAvatarUseCase } from './user/application/usecases/delete-user-avatar.usecase';
+import { S3Module } from '../../providers/files/s3/s3.module';
+import { UsersAvatarsRepository } from './user/infrastructure/users.avatars.repository';
 
 const commandHandler = [
   //user
   CreateUserUserCase,
   LoginUserUseCase,
+  UploadUserAvatarUseCase,
+  DeleteUserAvatarUseCase,
   //user
 
   //device
@@ -42,6 +48,7 @@ const commandHandler = [
 @Module({
   imports: [
     CqrsModule,
+    S3Module,
     TypeOrmModule.forFeature([User, Device, UserAvatarsEntity]),
   ],
   controllers: [AuthController, UsersController],
@@ -52,6 +59,7 @@ const commandHandler = [
     UsersQueryRepository,
     DevicesRepository,
     DevicesQueryRepository,
+    UsersAvatarsRepository,
     AuthService,
     JwtService,
     JwtStrategy,

@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RemoveFilePayloadDto {
   @ApiProperty({
-    example: '/profiles/avatars/123',
+    example: '/users/avatars/123',
   })
   @IsString()
   @IsNotEmpty()

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserAvatarViewDto } from './users-avatar-view-dto';
 
 export class UserViewDto {
   @ApiProperty()
@@ -14,6 +15,9 @@ export class UserViewDto {
   @ApiProperty()
   description: string;
 
+  @ApiProperty({ type: [UserAvatarViewDto] })
+  avatars: UserAvatarViewDto[];
+
   static mapToView(dto: any): UserViewDto {
     const user = new UserViewDto();
 
@@ -23,6 +27,8 @@ export class UserViewDto {
     user.createdAt = dto.createdAt;
     user.age = dto.age;
     user.description = dto.description;
+
+    user.avatars = dto.avatars;
 
     return user;
   }

@@ -81,6 +81,7 @@ export class UsersQueryRepository extends BaseRepository {
       where: {
         id: id,
       },
+      relations: ['avatars'],
     });
     if (!user) {
       throw new DomainException({

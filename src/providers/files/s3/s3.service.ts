@@ -13,8 +13,7 @@ import { RemoveFilePayloadDto } from './dto/remove-file-payload.dto';
 export class S3Service extends IFileService {
   private readonly logger = new Logger(S3Service.name);
 
-  // TODO: укажи имя бакета
-  private readonly bucketName = 'bucketName';
+  private readonly bucketName = 'main';
 
   constructor(@Inject(S3Lib) private readonly S3: AWS.S3) {
     super();

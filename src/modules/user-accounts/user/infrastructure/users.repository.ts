@@ -21,6 +21,14 @@ export class UsersRepository extends BaseRepository implements IUserRepository {
   async findByLogin(login: string): Promise<User | null> {
     return await this.userRepository().findOne({
       where: { login },
+      relations: ['avatars'],
+    });
+  }
+
+  async findById(id: string): Promise<User | null> {
+    return await this.userRepository().findOne({
+      where: { id },
+      relations: ['avatars'],
     });
   }
 
@@ -28,8 +36,6 @@ export class UsersRepository extends BaseRepository implements IUserRepository {
     await this.userRepository().save(user);
   }
   async getUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
-    console.log('user');
-
     return await this.userRepository().findOne({
       where: [
         {
@@ -39,6 +45,7 @@ export class UsersRepository extends BaseRepository implements IUserRepository {
           email: loginOrEmail,
         },
       ],
+      relations: ['avatars'],
     });
   }
 }

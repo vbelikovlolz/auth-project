@@ -3,7 +3,6 @@ import { UsersRepository } from '../../infrastructure/users.repository';
 import { BcryptService } from '../bcrypt.service';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { User } from '../../user.entity';
-import { BadRequestException } from '@nestjs/common';
 import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
 import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
 
@@ -24,8 +23,6 @@ export class CreateUserUserCase
     const { login, password, email, age, description } = dto;
 
     const userData = await this.usersRepository.findByLogin(login);
-
-    console.log(userData);
 
     if (userData) {
       throw new DomainException({

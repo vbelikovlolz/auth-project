@@ -7,13 +7,14 @@ import { DomainHttpExceptionsFilter } from './core/exceptions/filters/domain-exc
 import { APP_FILTER } from '@nestjs/core';
 import { AppService } from './app.service';
 import { TestingModule } from './modules/testing/testing.module';
+import { FilesModule } from './providers/files/files.module';
 @Module({
   imports: [
     TestingModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5430,
+      port: 5433,
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
@@ -22,6 +23,7 @@ import { TestingModule } from './modules/testing/testing.module';
     }),
     configModule,
     UserAccountsModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [

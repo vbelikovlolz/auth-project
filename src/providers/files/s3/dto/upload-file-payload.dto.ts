@@ -8,7 +8,7 @@ export class UploadFilePayloadDto {
   readonly file: IUploadedMulterFile;
 
   @ApiProperty({
-    example: '/profiles/avatars',
+    example: '/users/avatars',
   })
   @IsString()
   @IsNotEmpty()
