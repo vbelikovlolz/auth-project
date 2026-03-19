@@ -1,4 +1,3 @@
-//базовый класс view модели для запросов за списком с пагинацией
 import { ApiProperty } from '@nestjs/swagger';
 import { UserViewDto } from '../../modules/user-accounts/user/application/api/view-dto/users.view-dto';
 
@@ -17,7 +16,6 @@ export abstract class PaginatedViewDto<T> {
   @ApiProperty()
   pageSize: number;
 
-  //статический метод-утилита для мапинга
   public static mapToView<T>(data: {
     items: T;
     page: number;

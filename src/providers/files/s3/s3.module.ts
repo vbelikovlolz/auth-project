@@ -5,7 +5,6 @@ import { S3Lib } from './constants/do-spaces-service-lib.constant';
 import { S3Service } from './s3.service';
 import { IFileService } from '../files.adapter';
 import { S3Config } from './config/s3.config';
-import { UserAccountsConfig } from '../../../modules/user-accounts/user/config/user-accounts.config';
 
 @Module({
   providers: [

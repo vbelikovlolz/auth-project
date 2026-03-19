@@ -29,6 +29,8 @@ import { UploadUserAvatarUseCase } from './user/application/usecases/upload-user
 import { DeleteUserAvatarUseCase } from './user/application/usecases/delete-user-avatar.usecase';
 import { S3Module } from '../../providers/files/s3/s3.module';
 import { UsersAvatarsRepository } from './user/infrastructure/users.avatars.repository';
+import { RedisModule } from '../redis/redis.module';
+import { TransferBalanceUserUseCase } from './user/application/usecases/transfer-balance-user.usecase';
 
 const commandHandler = [
   //user
@@ -43,6 +45,9 @@ const commandHandler = [
   UpdateDeviceUseCase,
   DeleteDeviceUseCase,
   //device
+
+  //transfer balance
+  TransferBalanceUserUseCase,
 ];
 
 @Module({
@@ -50,6 +55,7 @@ const commandHandler = [
     CqrsModule,
     S3Module,
     TypeOrmModule.forFeature([User, Device, UserAvatarsEntity]),
+    RedisModule,
   ],
   controllers: [AuthController, UsersController],
   providers: [
@@ -88,5 +94,6 @@ const commandHandler = [
     },
     UserAccountsConfig,
   ],
+  exports: [UsersRepository],
 })
 export class UserAccountsModule {}

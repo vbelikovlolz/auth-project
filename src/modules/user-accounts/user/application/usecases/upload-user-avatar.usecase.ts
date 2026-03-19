@@ -6,7 +6,6 @@ import { IFileService } from '../../../../../providers/files/files.adapter';
 import { Inject } from '@nestjs/common';
 import { IUploadedMulterFile } from '../../../../../providers/files/s3/interfaces/upload-file.interface';
 import { UserAvatarsEntity } from '../../user.avatars.entity';
-import { User } from '../../user.entity';
 import { UsersQueryRepository } from '../../infrastructure/users.query.repository';
 import { UserViewDto } from '../api/view-dto/users.view-dto';
 

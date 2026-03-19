@@ -32,7 +32,23 @@ export class UsersRepository extends BaseRepository implements IUserRepository {
     });
   }
 
+  async findAllUsersBalance(): Promise<User[]> {
+    return await this.userRepository().find({
+      select: ['id', 'balance'],
+    });
+  }
+
+  async findByIdPessimisticWrite(id: string): Promise<User | null> {
+    return await this.userRepository().findOne({
+      where: { id: id },
+      lock: { mode: 'pessimistic_write' }, // Блокировка для избежания состояний гонки
+    });
+  }
+
   async save(user: User) {
+    await this.userRepository().save(user);
+  }
+  async saveAll(user: User[]) {
     await this.userRepository().save(user);
   }
   async getUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {

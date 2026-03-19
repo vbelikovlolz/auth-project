@@ -9,7 +9,7 @@ export class UserAvatarsEntity extends BaseEntity {
   @ManyToOne(() => User, (user) => user.avatars, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column()
@@ -19,4 +19,8 @@ export class UserAvatarsEntity extends BaseEntity {
   @Column()
   @ApiProperty()
   name: string;
+
+  @Column({ default: true })
+  @ApiProperty()
+  isActive: boolean;
 }

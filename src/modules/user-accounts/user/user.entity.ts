@@ -29,4 +29,13 @@ export class User extends BaseEntity {
     cascade: true,
   })
   public avatars: UserAvatarsEntity[];
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+  })
+  @ApiProperty()
+  public balance: number;
 }

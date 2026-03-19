@@ -48,7 +48,7 @@ export class DeleteUserAvatarUseCase
     }
 
     try {
-      // await this.fileService.removeFile({ path: avatar.url });
+      await this.fileService.removeFile({ path: avatar.url });
     } catch (error) {
       console.warn(`Failed to delete file from storage: ${avatar.url}`, error);
       // Можно продолжить удаление записи даже если файл не удалился

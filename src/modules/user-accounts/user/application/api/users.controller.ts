@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -26,6 +27,8 @@ import { UserContextDto } from '../../../guards/dto/user-context.dto';
 import { IUploadedMulterFile } from '../../../../../providers/files/s3/interfaces/upload-file.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileSizeValidationPipe } from '../../../../../core/exceptions/file-size-validation-pipe';
+import { TransferBalanceUserDto } from '../../dto/transfer-balance-user.dto';
+import { TransferBalanceUserCommand } from '../usecases/transfer-balance-user.usecase';
 
 @Controller('users')
 export class UsersController {
@@ -50,7 +53,7 @@ export class UsersController {
   async getUsers(
     @Query() queryParams: paginationType,
   ): Promise<PaginatedViewDto<UserViewDto[]>> {
-    const paginationQueriesRes = paginationQueries(queryParams);
+    const paginationQueriesRes: paginationType = paginationQueries(queryParams);
     return await this.usersQueryRepository.getUsers(paginationQueriesRes);
   }
 
@@ -87,5 +90,19 @@ export class UsersController {
         }),
       );
     }
+  }
+
+  @Get('top')
+  @ApiOperation({ summary: 'Get top users' })
+  async usersTop(@Query() queryParams: paginationType) {
+    const paginationQueriesRes: paginationType = paginationQueries(queryParams);
+    return await this.usersQueryRepository.usersTop(paginationQueriesRes);
+  }
+  @Post('transfer')
+  @ApiOperation({ summary: 'transfer balance' })
+  async transfer(@Body() transferBalanceUserDto: TransferBalanceUserDto) {
+    return await this.commandBus.execute<TransferBalanceUserCommand, string>(
+      new TransferBalanceUserCommand(transferBalanceUserDto),
+    );
   }
 }

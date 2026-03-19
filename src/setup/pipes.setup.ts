@@ -10,12 +10,9 @@ import {
 import { DomainExceptionCode } from '../core/exceptions/domain-exception-codes';
 import { ObjectIdValidationTransformationPipe } from '../core/exceptions/object-id-validation-transformation-pipe.service';
 
-//функция использует рекурсию для обхода объекта children при вложенных полях при валидации
-//поставьте логи и разберитесь как она работает
-//TODO: tests
 export const errorFormatter = (
   errors: ValidationError[],
-  errorMessage?: any,
+  errorMessage?: Extension[],
 ): Extension[] => {
   const errorsForResponse = errorMessage || [];
 

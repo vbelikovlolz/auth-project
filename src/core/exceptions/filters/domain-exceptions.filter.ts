@@ -45,7 +45,7 @@ export class DomainHttpExceptionsFilter implements ExceptionFilter {
 
   private buildResponseBody(exception: DomainException) {
     return {
-      errorsMessages: exception.extensions,
+      errorsMessages: exception.message,
     };
   }
 }

@@ -8,22 +8,62 @@ import { APP_FILTER } from '@nestjs/core';
 import { AppService } from './app.service';
 import { TestingModule } from './modules/testing/testing.module';
 import { FilesModule } from './providers/files/files.module';
+import { RedisModule } from './modules/redis/redis.module';
+import { DataSource } from 'typeorm';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { BalanceResetModule } from './modules/balance-reset/balance-reset.module';
+import { BullModule } from '@nestjs/bull';
+import { RedisConfig } from './modules/redis/config/redis.config';
 @Module({
   imports: [
     TestingModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory() {
+        return {
+          type: 'postgres',
+          host: 'localhost',
+          port: 5433,
+          username: 'postgres',
+          password: 'postgres',
+          database: 'postgres',
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
+      async dataSourceFactory(options) {
+        if (!options) {
+          throw new Error('Invalid options passed');
+        }
+        const dataSource = new DataSource(options);
+        await dataSource.initialize();
+        return addTransactionalDataSource(dataSource);
+      },
+    }),
+    BullModule.forRootAsync({
+      useFactory(redisConfig: RedisConfig) {
+        return {
+          redis: {
+            host: redisConfig.redisHost || 'localhost',
+            port: redisConfig.redisPort || 6379,
+            password: redisConfig.redisPassword,
+          },
+          defaultJobOptions: {
+            attempts: 3,
+            removeOnComplete: false,
+          },
+          prefix:
+            process.env.NODE_ENV === 'development'
+              ? `dev_${process.pid}_`
+              : 'bull',
+        };
+      },
+      inject: [RedisConfig],
     }),
     configModule,
     UserAccountsModule,
     FilesModule,
+    RedisModule,
+    BalanceResetModule,
   ],
   controllers: [],
   providers: [

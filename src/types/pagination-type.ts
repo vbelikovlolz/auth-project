@@ -6,4 +6,6 @@ export type paginationType = {
   searchNameTerm: string | null;
   searchLoginTerm: string | null;
   searchEmailTerm: string | null;
+  minAge: number | null;
+  maxAge: number | null;
 };

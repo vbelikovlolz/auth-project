@@ -37,8 +37,8 @@ export class CreateUserDto {
   age: number;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  // @IsString()
+  // @IsNotEmpty()
   @Length(0, 1000)
   description: string;
 }
