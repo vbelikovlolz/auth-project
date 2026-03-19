@@ -99,7 +99,7 @@ export class UsersController {
     return await this.usersQueryRepository.usersTop(paginationQueriesRes);
   }
   @Post('transfer')
-  @ApiOperation({ summary: 'transfer balance' })
+  @ApiOperation({ summary: 'Balance transfer between two users' })
   async transfer(@Body() transferBalanceUserDto: TransferBalanceUserDto) {
     return await this.commandBus.execute<TransferBalanceUserCommand, string>(
       new TransferBalanceUserCommand(transferBalanceUserDto),
