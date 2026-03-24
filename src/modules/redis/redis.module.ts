@@ -10,10 +10,10 @@ import { RedisService } from './redis.service';
       provide: 'REDIS_CLIENT',
       useFactory: (redisConfig: RedisConfig): Redis => {
         return new Redis({
-          host: redisConfig.redisHost || 'localhost',
-          port: redisConfig.redisPort || 6379,
-          password: redisConfig.redisPassword,
-          db: redisConfig.redisDb || 0,
+          host: redisConfig.host || 'localhost',
+          port: redisConfig.port || 6379,
+          password: redisConfig.password,
+          db: redisConfig.db || 0,
           retryStrategy: (times) => {
             return Math.min(times * 50, 2000);
           },

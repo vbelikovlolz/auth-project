@@ -16,7 +16,7 @@ import { UserWithAvatar } from '../../../../types/user-avatar-type';
 @Injectable()
 export class UsersQueryRepository extends BaseRepository {
   private readonly logger = new Logger(UsersQueryRepository.name);
-  private readonly CACHE_TTL = 30;
+  private readonly CACHE_TTL_SEC = 30;
 
   constructor(
     @InjectDataSource()
@@ -63,7 +63,7 @@ export class UsersQueryRepository extends BaseRepository {
     try {
       await this.redisService.setex(
         cacheKey,
-        this.CACHE_TTL,
+        this.CACHE_TTL_SEC,
         JSON.stringify(data),
       );
     } catch (error) {

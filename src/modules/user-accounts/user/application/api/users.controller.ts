@@ -79,17 +79,15 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete avatars by user' })
   async deletePhoto(
-    @ExtractUserFromRequest() user: UserContextDto | null,
+    @ExtractUserFromRequest() user: UserContextDto,
     @Param('id', ParseUUIDPipe) avatarId: string,
   ) {
-    if (user) {
-      return await this.commandBus.execute<DeleteUserAvatarCommand, string>(
-        new DeleteUserAvatarCommand({
-          userId: user.id,
-          avatarId: avatarId,
-        }),
-      );
-    }
+    return await this.commandBus.execute<DeleteUserAvatarCommand, string>(
+      new DeleteUserAvatarCommand({
+        userId: user.id,
+        avatarId: avatarId,
+      }),
+    );
   }
 
   @Get('top')

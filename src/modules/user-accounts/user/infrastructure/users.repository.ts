@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../user.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
 import { IUserRepository } from '../../../../core/infrastructure/user.repository.interface';
 import { BaseRepository } from '../../../../core/infrastructure/base.repository';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -51,6 +51,11 @@ export class UsersRepository extends BaseRepository implements IUserRepository {
   async saveAll(user: User[]) {
     await this.userRepository().save(user);
   }
+
+  async resetBalances(ids: string[]) {
+    await this.userRepository().update({ id: In(ids) }, { balance: 0 });
+  }
+
   async getUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
     return await this.userRepository().findOne({
       where: [

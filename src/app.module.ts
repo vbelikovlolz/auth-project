@@ -43,18 +43,14 @@ import { RedisConfig } from './modules/redis/config/redis.config';
       useFactory(redisConfig: RedisConfig) {
         return {
           redis: {
-            host: redisConfig.redisHost || 'localhost',
-            port: redisConfig.redisPort || 6379,
-            password: redisConfig.redisPassword,
+            host: redisConfig.host || 'localhost',
+            port: redisConfig.port || 6379,
+            password: redisConfig.password,
           },
           defaultJobOptions: {
             attempts: 3,
             removeOnComplete: false,
           },
-          prefix:
-            process.env.NODE_ENV === 'development'
-              ? `dev_${process.pid}_`
-              : 'bull',
         };
       },
       inject: [RedisConfig],

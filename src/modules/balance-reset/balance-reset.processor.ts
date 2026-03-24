@@ -17,11 +17,14 @@ export class BalanceResetProcessor {
       const users = await this.usersRepository.findAllUsersBalance();
       this.logger.log(`Найдено ${users.length} пользователей для обновления`);
 
-      const usersToUpdate = users.map((user) => {
+      /*const usersToUpdate = users.map((user) => {
         user.balance = 0;
         return user;
       });
-      await this.usersRepository.saveAll(usersToUpdate);
+      await this.usersRepository.saveAll(usersToUpdate);*/
+
+      const userIds: string[] = users.map((user) => user.id);
+      await this.usersRepository.resetBalances(userIds);
 
       this.logger.log(`Задача ${job.id} успешно выполнена. Балансы обнулены.`);
 

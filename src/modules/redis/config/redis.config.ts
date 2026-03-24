@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IsNotEmpty } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { configValidationUtility } from '../../../setup/config-validation.utility';
 
 @Injectable()
 export class RedisConfig {
+  @IsString()
+  @IsOptional()
+  host?: string;
+
+  @IsInt()
+  @Min(1)
+  @Max(65535)
+  port?: number;
+
+  @IsInt()
+  db?: number;
+
+  @IsString()
+  password?: string;
+
   constructor(private configService: ConfigService<any, true>) {
+    this.host = this.configService.get('REDIS_HOST');
+    this.port = parseInt(this.configService.get('REDIS_PORT'));
+    this.password = this.configService.get('REDIS_PASSWORD');
+    this.db = parseInt(this.configService.get('REDIS_DB'));
+
     configValidationUtility.validateConfig(this);
   }
-
-  @IsNotEmpty({
-    message: 'Set Env variable REDIS_PASSWORD',
-  })
-  redisPassword: string = this.configService.get('REDIS_PASSWORD');
-
-  @IsNotEmpty({
-    message: 'Set Env variable REDIS_PORT',
-  })
-  redisPort: number = this.configService.get('REDIS_PORT');
-
-  @IsNotEmpty({
-    message: 'Set Env variable REDIS_DB',
-  })
-  redisDb: number = this.configService.get('REDIS_DB');
-
-  @IsNotEmpty({
-    message: 'Set Env variable REDIS_HOST',
-  })
-  redisHost: string = this.configService.get('REDIS_HOST');
 }

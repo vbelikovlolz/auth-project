@@ -1,40 +1,55 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { BalanceResetService } from './balance-reset.service';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class BalanceResetScheduler implements OnModuleInit {
   private readonly logger = new Logger(BalanceResetScheduler.name);
-  private intervalId: NodeJS.Timeout;
 
-  constructor(private readonly balanceResetService: BalanceResetService) {}
+  constructor(
+    @InjectQueue('balance-reset-queue')
+    private readonly balanceResetQueue: Queue,
+  ) {}
 
-  onModuleInit() {
-    this.startScheduler();
+  async onModuleInit() {
+    await this.startScheduler();
   }
 
-  private startScheduler() {
-    const INTERVAL_MS = 10 * 60 * 1000; // 10 минут в миллисекундах
+  private async startScheduler() {
+    this.logger.log(
+      `Планировщик запущен через Bull. Обнуление балансов каждые 10 минут.`,
+    );
 
-    this.logger.log(`Планировщик запущен. Обнуление балансов каждые 10 минут.`);
+    const INTERVAL_MS = 10 * 60 * 1000;
 
-    this.intervalId = setInterval(() => {
-      this.logger.log('Плановый запуск задачи на обнуление балансов...');
+    await this.removeExistingRepeatableJobs();
 
-      this.balanceResetService
-        .addResetJob()
-        .then((job) => {
-          this.logger.log(
-            `Плановая задача добавлена в очередь с ID: ${job.id}`,
-          );
-        })
-        .catch((error) => {
-          this.logger.error(`Ошибка при добавлении плановой задачи: ${error}`);
-        });
-    }, INTERVAL_MS);
+    await this.balanceResetQueue.add(
+      'reset-balance',
+      {},
+      {
+        repeat: {
+          every: INTERVAL_MS,
+        },
+        removeOnComplete: true,
+        removeOnFail: false,
+        jobId: 'scheduled-balance-reset',
+      },
+    );
+  }
 
-    // Чтобы планировщик не блокировал завершение приложения
-    if (process.env.NODE_ENV === 'test') {
-      clearInterval(this.intervalId);
+  private async removeExistingRepeatableJobs() {
+    try {
+      const repeatableJobs = await this.balanceResetQueue.getRepeatableJobs();
+
+      for (const job of repeatableJobs) {
+        if (job.name === 'reset-balance') {
+          await this.balanceResetQueue.removeRepeatableByKey(job.key);
+          this.logger.log(`Удалено существующее задание: ${job.key}`);
+        }
+      }
+    } catch (error) {
+      this.logger.error(`Ошибка при удалении заданий: ${error}`);
     }
   }
 }

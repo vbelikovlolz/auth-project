@@ -1,4 +1,3 @@
-// balance-reset.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
@@ -15,7 +14,7 @@ export class BalanceResetService {
     this.logger.log('Добавление задачи на обнуление балансов в очередь');
 
     const job = await this.balanceResetQueue.add(
-      'reset-balance', // Имя задачи
+      'reset-balance',
       {
         timestamp: new Date().toISOString(),
         triggeredBy: 'api',
