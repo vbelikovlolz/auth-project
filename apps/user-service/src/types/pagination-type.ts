@@ -1,4 +1,4 @@
-export type paginationType = {
+/*export type paginationType = {
   pageNumber: number;
   pageSize: number;
   sortBy: string;
@@ -8,4 +8,4 @@ export type paginationType = {
   searchEmailTerm: string | null;
   minAge: number | null;
   maxAge: number | null;
-};
+};*/

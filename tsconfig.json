@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-//    "moduleResolution": "commonjs",
-//    "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
@@ -21,10 +19,18 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "useDefineForClassFields": false
-
-    //    "strictPropertyInitialization": true,
-//    "strict": true
+    "useDefineForClassFields": false,
+    "paths": {
+      "@app/shared": [
+        "libs/shared/src"
+      ],
+      "@app/shared/*": [
+        "libs/shared/src/*"
+      ]
+    }
   },
-  "include": ["src/**/*", "test/**/*"]
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
 }

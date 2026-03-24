@@ -1,20 +1,18 @@
-import { paginationType } from '../../types/pagination-type';
-
-export interface PaginationQuery {
-  pageNumber?: string | number;
-  pageSize?: string | number;
-  sortBy?: string;
-  sortDirection?: string;
-  searchNameTerm?: string;
-  searchLoginTerm?: string;
-  searchEmailTerm?: string;
-  minAge?: string | number;
-  maxAge?: string | number;
-}
+export type PaginationType = {
+  pageNumber: number;
+  pageSize: number;
+  sortBy: string;
+  sortDirection: string;
+  searchNameTerm: string | null;
+  searchLoginTerm: string | null;
+  searchEmailTerm: string | null;
+  minAge: number | null;
+  maxAge: number | null;
+};
 
 export const paginationQueries = (
-  paginationQuery: paginationType,
-): paginationType => {
+  paginationQuery: PaginationType,
+): PaginationType => {
   const pageNumber = paginationQuery.pageNumber
     ? +paginationQuery.pageNumber
     : 1;

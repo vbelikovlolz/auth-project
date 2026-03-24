@@ -9,7 +9,7 @@ export class BalanceResetScheduler implements OnModuleInit {
   constructor(private readonly balanceResetService: BalanceResetService) {}
 
   onModuleInit() {
-    this.startScheduler();
+    // this.startScheduler();
   }
 
   private startScheduler() {

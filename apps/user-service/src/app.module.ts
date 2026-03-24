@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { configModule } from './dynamic-config-module';
 import { UserAccountsModule } from './modules/user-accounts/user-accounts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AllHttpExceptionsFilter } from './core/exceptions/filters/all-exceptions.filter';
@@ -14,6 +13,7 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
 import { BalanceResetModule } from './modules/balance-reset/balance-reset.module';
 import { BullModule } from '@nestjs/bull';
 import { RedisConfig } from './modules/redis/config/redis.config';
+import { configModule } from './dynamic-config-module';
 @Module({
   imports: [
     TestingModule,
@@ -51,10 +51,6 @@ import { RedisConfig } from './modules/redis/config/redis.config';
             attempts: 3,
             removeOnComplete: false,
           },
-          prefix:
-            process.env.NODE_ENV === 'development'
-              ? `dev_${process.pid}_`
-              : 'bull',
         };
       },
       inject: [RedisConfig],
