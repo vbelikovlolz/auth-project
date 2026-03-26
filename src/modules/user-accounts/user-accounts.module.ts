@@ -6,7 +6,6 @@ import { UsersRepository } from './user/infrastructure/users.repository';
 import { AuthController } from './auth/api/auth-controller';
 import { BcryptService } from './user/application/bcrypt.service';
 import { CreateUserUserCase } from './user/application/usecases/create-user.usecase';
-import { UserAccountsConfig } from './user/config/user-accounts.config';
 import { JwtService } from '@nestjs/jwt';
 import {
   ACCESS_TOKEN_STRATEGY_INJECT_TOKEN,
@@ -21,7 +20,7 @@ import { Device } from './device/domain/device.entity';
 import { AuthService } from './auth/application/auth.service';
 import { UpdateDeviceUseCase } from './device/application/usecases/update-device.usecase';
 import { JwtStrategy } from './guards/bearer/jwt.strategy';
-import { JwtRtStrategy } from './guards/bearer/refresh-token/jwt.rt.strategy';
+import JwtRtStrategy from './guards/bearer/refresh-token/jwt.rt.strategy';
 import { DeleteDeviceUseCase } from './device/application/usecases/delete-device.usecase';
 import { UsersController } from './user/application/api/users.controller';
 import { UserAvatarsEntity } from './user/user.avatars.entity';
@@ -31,6 +30,8 @@ import { S3Module } from '../../providers/files/s3/s3.module';
 import { UsersAvatarsRepository } from './user/infrastructure/users.avatars.repository';
 import { RedisModule } from '../redis/redis.module';
 import { TransferBalanceUserUseCase } from './user/application/usecases/transfer-balance-user.usecase';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppConfig, appConfig } from '../../config/app.config';
 
 const commandHandler = [
   //user
@@ -52,6 +53,7 @@ const commandHandler = [
 
 @Module({
   imports: [
+    ConfigModule.forFeature(appConfig),
     CqrsModule,
     S3Module,
     TypeOrmModule.forFeature([User, Device, UserAvatarsEntity]),
@@ -74,25 +76,36 @@ const commandHandler = [
     //если надо внедрить несколько раз один и тот же класс
     {
       provide: ACCESS_TOKEN_STRATEGY_INJECT_TOKEN,
-      useFactory: (userAccountConfig: UserAccountsConfig): JwtService => {
+      useFactory: (configService: ConfigService): JwtService => {
+        type JwtExpireIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
+
+        const appConfig = configService.get<AppConfig>('app')!;
+
         return new JwtService({
-          secret: userAccountConfig.accessTokenSecret,
-          signOptions: { expiresIn: userAccountConfig.accessTokenExpireIn },
+          secret: appConfig.accessTokenSecret,
+          signOptions: {
+            expiresIn: appConfig.accessTokenExpireIn as JwtExpireIn,
+          },
         });
       },
-      inject: [UserAccountsConfig],
+      inject: [ConfigService],
     },
     {
       provide: REFRESH_TOKEN_STRATEGY_INJECT_TOKEN,
-      useFactory: (userAccountConfig: UserAccountsConfig): JwtService => {
+      useFactory: (configService: ConfigService): JwtService => {
+        const appConfig = configService.get<AppConfig>('app')!;
+        type JwtExpireIn = `${number}${'s' | 'm' | 'h' | 'd'}`;
+
         return new JwtService({
-          secret: userAccountConfig.refreshTokenSecret,
-          signOptions: { expiresIn: userAccountConfig.refreshTokenExpireIn },
+          secret: appConfig.refreshTokenSecret,
+          signOptions: {
+            expiresIn: appConfig.refreshTokenExpireIn as JwtExpireIn,
+          },
         });
       },
-      inject: [UserAccountsConfig],
+      inject: [ConfigService],
     },
-    UserAccountsConfig,
+    // UserAccountsConfig,
   ],
   exports: [UsersRepository],
 })

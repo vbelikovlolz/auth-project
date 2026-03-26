@@ -13,23 +13,29 @@ import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { BalanceResetModule } from './modules/balance-reset/balance-reset.module';
 import { BullModule } from '@nestjs/bull';
-import { RedisConfig } from './modules/redis/config/redis.config';
+import { AppConfig, appConfig } from './config/app.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forFeature(appConfig),
     TestingModule,
     TypeOrmModule.forRootAsync({
-      useFactory() {
+      useFactory(configService: ConfigService) {
+        const appConfig = configService.get<AppConfig>('app')!;
+
         return {
-          type: 'postgres',
-          host: 'localhost',
-          port: 5433,
-          username: 'postgres',
-          password: 'postgres',
-          database: 'postgres',
+          type: appConfig.postgresType,
+          host: appConfig.postgresHost,
+          port: appConfig.postgresPort,
+          username: appConfig.postgresUsername,
+          password: appConfig.postgresPass,
+          database: appConfig.postgresDb,
           autoLoadEntities: true,
           synchronize: true,
         };
       },
+      inject: [ConfigService],
+
       async dataSourceFactory(options) {
         if (!options) {
           throw new Error('Invalid options passed');
@@ -40,12 +46,13 @@ import { RedisConfig } from './modules/redis/config/redis.config';
       },
     }),
     BullModule.forRootAsync({
-      useFactory(redisConfig: RedisConfig) {
+      useFactory(configService: ConfigService) {
+        const appConfig = configService.get<AppConfig>('app')!;
         return {
           redis: {
-            host: redisConfig.host || 'localhost',
-            port: redisConfig.port || 6379,
-            password: redisConfig.password,
+            host: appConfig.redisHost,
+            port: appConfig.redisPort,
+            password: appConfig.redisPass,
           },
           defaultJobOptions: {
             attempts: 3,
@@ -53,7 +60,7 @@ import { RedisConfig } from './modules/redis/config/redis.config';
           },
         };
       },
-      inject: [RedisConfig],
+      inject: [ConfigService],
     }),
     configModule,
     UserAccountsModule,

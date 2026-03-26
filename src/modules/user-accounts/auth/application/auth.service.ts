@@ -1,10 +1,11 @@
 import { UsersRepository } from '../../user/infrastructure/users.repository';
 import { BcryptService } from '../../user/application/bcrypt.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserAccountsConfig } from '../../user/config/user-accounts.config';
 import { DomainException } from '../../../../core/exceptions/domain-exceptions';
 import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '../../../../config/app.config';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
     protected usersRepository: UsersRepository,
     protected bcryptService: BcryptService,
     private jwtService: JwtService,
-    private userAccountConfig: UserAccountsConfig,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(login: string, password: string) {
@@ -57,12 +58,13 @@ export class AuthService {
   }
 
   async validateToken(token: string): Promise<any> {
+    const appConfig = this.configService.get<AppConfig>('app')!;
+
     try {
       return await this.jwtService.verifyAsync(token, {
-        secret: this.userAccountConfig.refreshTokenSecret,
+        secret: appConfig.refreshTokenSecret,
       });
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       throw new Error('Invalid or expired token', e);
     }
   }
