@@ -1,0 +1,71 @@
+import { UsersRepository } from '../../user/infrastructure/users.repository';
+import { BcryptService } from '../../user/application/bcrypt.service';
+import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DomainException } from '@app/shared/exceptions/domain-exceptions';
+import { DomainExceptionCode } from '@app/shared/exceptions/domain-exception-codes';
+import { AppConfig } from '@app/shared/config/app.config';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    protected usersRepository: UsersRepository,
+    protected bcryptService: BcryptService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
+
+  async validateUser(login: string, password: string) {
+    const user = await this.usersRepository.findByLogin(login);
+    if (!user) {
+      return null;
+    }
+
+    const isPassCorrect = await this.bcryptService.checkPassword(
+      password,
+      user.passwordHash,
+    );
+
+    if (!isPassCorrect) {
+      return null;
+    }
+    return user;
+  }
+
+  async checkCredentials(loginOrEmail: string, password: string) {
+    const user = await this.usersRepository.getUserByLoginOrEmail(loginOrEmail);
+
+    if (!user) {
+      throw new DomainException({
+        code: DomainExceptionCode.Unauthorized,
+        message: 'user not found',
+      });
+    }
+
+    const isPassCorrect = await this.bcryptService.checkPassword(
+      password,
+      user.passwordHash,
+    );
+
+    if (!isPassCorrect) {
+      throw new DomainException({
+        code: DomainExceptionCode.Unauthorized,
+        message: 'password is not correct',
+      });
+    }
+    return user;
+  }
+
+  async validateToken(token: string): Promise<any> {
+    const appConfig = this.configService.get<AppConfig>('app')!;
+
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: appConfig.refreshTokenSecret,
+      });
+    } catch (e) {
+      throw new Error('Invalid or expired token', e);
+    }
+  }
+}
