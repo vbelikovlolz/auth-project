@@ -16,7 +16,6 @@ import { UsersQueryRepository } from '../../infrastructure/users.query.repositor
 import { JwtAuthGuard } from '../../../guards/bearer/jwt-auth.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserViewDto } from './view-dto/users.view-dto';
-import { PaginatedViewDto } from '../../../../../core/dto/base.paginated.view-dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UploadUserAvatarCommand } from '../usecases/upload-user-avatar.usecase';
 import { DeleteUserAvatarCommand } from '../usecases/delete-user-avatar.usecase';
@@ -27,16 +26,18 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { TransferBalanceUserDto } from '../../dto/transfer-balance-user.dto';
 import { TransferBalanceUserCommand } from '../usecases/transfer-balance-user.usecase';
 import {
-  paginationQueries,
+  PaginationService,
   PaginationType,
 } from '@app/shared/helpers/pagination-queries';
 import { FileSizeValidationPipe } from '@app/shared/exceptions/file-size-validation-pipe';
+import { PaginatedViewDto } from '@app/shared/dto/base.paginated.view-dto';
 
 @Controller('users')
 export class UsersController {
   constructor(
     protected usersQueryRepository: UsersQueryRepository,
     private commandBus: CommandBus,
+    private paginationService: PaginationService,
   ) {}
 
   @Get()
@@ -55,7 +56,8 @@ export class UsersController {
   async getUsers(
     @Query() queryParams: PaginationType,
   ): Promise<PaginatedViewDto<UserViewDto[]>> {
-    const paginationQueriesRes: PaginationType = paginationQueries(queryParams);
+    const paginationQueriesRes: PaginationType =
+      this.paginationService.normalizeQueries(queryParams);
     return await this.usersQueryRepository.getUsers(paginationQueriesRes);
   }
 
@@ -95,7 +97,8 @@ export class UsersController {
   @Get('top')
   @ApiOperation({ summary: 'Get top users' })
   async usersTop(@Query() queryParams: PaginationType) {
-    const paginationQueriesRes: PaginationType = paginationQueries(queryParams);
+    const paginationQueriesRes: PaginationType =
+      this.paginationService.normalizeQueries(queryParams);
     return await this.usersQueryRepository.usersTop(paginationQueriesRes);
   }
   @Post('transfer')

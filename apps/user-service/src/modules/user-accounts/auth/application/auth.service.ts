@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DomainException } from '@app/shared/exceptions/domain-exceptions';
 import { DomainExceptionCode } from '@app/shared/exceptions/domain-exception-codes';
-import { AppConfig } from '@app/shared/config/app.config';
+import { AppConfig } from '../../../../config/app.config';
 
 @Injectable()
 export class AuthService {

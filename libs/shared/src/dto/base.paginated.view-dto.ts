@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserViewDto } from '../../modules/user-accounts/user/application/api/view-dto/users.view-dto';
 
 export abstract class PaginatedViewDto<T> {
-  @ApiProperty({ type: () => [UserViewDto], description: 'A list of items' })
+  @ApiProperty({ description: 'A list of items' })
   abstract items: T;
   @ApiProperty()
   totalCount: number;

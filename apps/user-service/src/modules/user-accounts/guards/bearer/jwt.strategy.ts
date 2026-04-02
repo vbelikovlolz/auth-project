@@ -5,7 +5,7 @@ import { UserContextDto } from '../dto/user-context.dto';
 import { UsersQueryRepository } from '../../user/infrastructure/users.query.repository';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../../../../types/jwt.types';
-import { AppConfig } from '@app/shared/config/app.config';
+import { AppConfig } from '../../../../config/app.config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {

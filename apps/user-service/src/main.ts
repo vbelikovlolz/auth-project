@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { appSetup } from './setup/app.setup';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { appSetup } from '@app/shared/setup/app.setup';
 
 async function bootstrap() {
   initializeTransactionalContext();

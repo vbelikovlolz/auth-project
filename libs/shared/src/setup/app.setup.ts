@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
-import { pipesSetup } from './pipes.setup';
+import { pipesSetupService } from '@app/shared/setup/pipes.setup';
 export function appSetup(app: INestApplication) {
-  pipesSetup(app);
+  pipesSetupService(app);
   app.use(cookieParser());
 }

@@ -1,17 +1,19 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AuthService } from '../../../auth/application/auth.service';
 import { DevicesQueryRepository } from '../../../device/infrastructure/devices.query.repository';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../../../../../types/jwt.types';
 import { Request } from 'express';
-import { AppConfig } from '@app/shared/config/app.config';
 import { DomainException } from '@app/shared/exceptions/domain-exceptions';
 import { DomainExceptionCode } from '@app/shared/exceptions/domain-exception-codes';
+import { AppConfig } from '../../../../../config/app.config';
 
 @Injectable()
 class JwtRtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
+  private readonly logger = new Logger(JwtRtStrategy.name);
+
   constructor(
     private configService: ConfigService,
     private authService: AuthService,
@@ -23,6 +25,8 @@ class JwtRtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           let token = null;
+
+          this.logger.log('RT JWT', req);
 
           if (req && req.cookies) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

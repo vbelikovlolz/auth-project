@@ -5,7 +5,7 @@ import { S3Lib } from './constants/do-spaces-service-lib.constant';
 import { S3Service } from './s3.service';
 import { IFileService } from '../files.adapter';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '@app/shared/config/app.config';
+import { AppConfig } from '../../../config/app.config';
 
 @Module({
   providers: [

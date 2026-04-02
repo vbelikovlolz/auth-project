@@ -30,8 +30,8 @@ import { UsersAvatarsRepository } from './user/infrastructure/users.avatars.repo
 import { RedisModule } from '../redis/redis.module';
 import { TransferBalanceUserUseCase } from './user/application/usecases/transfer-balance-user.usecase';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppConfig, appConfig } from '@app/shared/config/app.config';
 import { UploadUserAvatarUseCase } from './user/application/usecases/upload-user-avatar.usecase';
+import { appConfig, AppConfig } from '../../config/app.config';
 
 const commandHandler = [
   //user
@@ -106,6 +106,6 @@ const commandHandler = [
       inject: [ConfigService],
     },
   ],
-  exports: [UsersRepository],
+  exports: [UsersRepository, AuthService],
 })
 export class UserAccountsModule {}

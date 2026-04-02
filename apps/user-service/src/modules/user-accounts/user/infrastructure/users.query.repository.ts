@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { User } from '../user.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { PaginatedViewDto } from '../../../../core/dto/base.paginated.view-dto';
 import { UserAvatarsEntity } from '../user.avatars.entity';
 import { RedisService } from '../../../redis/redis.service';
 import { AvatarInfo } from '../../../../types/avatar-info-type';
@@ -12,6 +11,7 @@ import { UserViewDto } from '../application/api/view-dto/users.view-dto';
 import { DomainExceptionCode } from '@app/shared/exceptions/domain-exception-codes';
 import { DomainException } from '@app/shared/exceptions/domain-exceptions';
 import { PaginationType } from '@app/shared/helpers/pagination-queries';
+import { PaginatedViewDto } from '@app/shared/dto/base.paginated.view-dto';
 
 @Injectable()
 export class UsersQueryRepository extends BaseRepository {

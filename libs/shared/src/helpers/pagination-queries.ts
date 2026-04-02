@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 export type PaginationType = {
   pageNumber: number;
   pageSize: number;
@@ -9,40 +11,52 @@ export type PaginationType = {
   minAge: number | null;
   maxAge: number | null;
 };
+export type PaginationInput = Partial<PaginationType>;
 
-export const paginationQueries = (
-  paginationQuery: PaginationType,
-): PaginationType => {
-  const pageNumber = paginationQuery.pageNumber
-    ? +paginationQuery.pageNumber
-    : 1;
-  const pageSize = paginationQuery.pageSize ? +paginationQuery.pageSize : 10;
-  const sortBy = paginationQuery.sortBy
-    ? String(paginationQuery.sortBy)
-    : 'createdAt';
-  const sortDirection =
-    paginationQuery.sortDirection === 'asc' ? 'asc' : 'desc';
-  const searchNameTerm = paginationQuery.searchNameTerm
-    ? String(paginationQuery.searchNameTerm)
-    : null;
-  const searchLoginTerm = paginationQuery.searchLoginTerm
-    ? String(paginationQuery.searchLoginTerm)
-    : null;
-  const searchEmailTerm = paginationQuery.searchEmailTerm
-    ? String(paginationQuery.searchEmailTerm)
-    : null;
-  const minAge = paginationQuery.minAge ? +paginationQuery.minAge : null;
+@Injectable()
+export class PaginationService {
+  normalizeQueries(paginationQuery: PaginationInput): PaginationType {
+    const pageNumber = Math.max(1, Number(paginationQuery.pageNumber) || 1);
+    const pageSize = Math.min(
+      100,
+      Math.max(1, Number(paginationQuery.pageSize) || 10),
+    );
+    const sortBy =
+      paginationQuery.sortBy && String(paginationQuery.sortBy).trim()
+        ? String(paginationQuery.sortBy)
+        : 'createdAt';
+    const sortDirection =
+      paginationQuery.sortDirection === 'asc' ? 'asc' : 'desc';
 
-  const maxAge = paginationQuery.maxAge ? +paginationQuery.maxAge : null;
-  return {
-    pageNumber,
-    pageSize,
-    sortBy,
-    sortDirection,
-    searchNameTerm,
-    searchLoginTerm,
-    searchEmailTerm,
-    minAge,
-    maxAge,
-  };
-};
+    const searchNameTerm = paginationQuery.searchNameTerm
+      ? String(paginationQuery.searchNameTerm).trim() || null
+      : null;
+    const searchLoginTerm = paginationQuery.searchLoginTerm
+      ? String(paginationQuery.searchLoginTerm).trim() || null
+      : null;
+    const searchEmailTerm = paginationQuery.searchEmailTerm
+      ? String(paginationQuery.searchEmailTerm).trim() || null
+      : null;
+
+    const minAge =
+      paginationQuery.minAge !== null && paginationQuery.minAge !== undefined
+        ? Math.max(0, Number(paginationQuery.minAge))
+        : null;
+    const maxAge =
+      paginationQuery.maxAge !== null && paginationQuery.maxAge !== undefined
+        ? Math.min(150, Number(paginationQuery.maxAge))
+        : null;
+
+    return {
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+      searchNameTerm,
+      searchLoginTerm,
+      searchEmailTerm,
+      minAge,
+      maxAge,
+    };
+  }
+}

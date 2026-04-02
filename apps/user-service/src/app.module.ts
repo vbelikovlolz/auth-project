@@ -12,11 +12,15 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
 import { BalanceResetModule } from './modules/balance-reset/balance-reset.module';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppConfig, appConfig } from '@app/shared/config/app.config';
 import { AllHttpExceptionsFilter } from '@app/shared/exceptions/filters/all-exceptions.filter';
 import { DomainHttpExceptionsFilter } from '@app/shared/exceptions/filters/domain-exceptions.filter';
+import { appConfig, AppConfig } from './config/app.config';
+import { SharedModule } from '@app/shared';
+import { NotificationModule } from '../../notification-service/src/modules/notification/notification.module';
 @Module({
   imports: [
+    SharedModule,
+    NotificationModule,
     ConfigModule.forFeature(appConfig),
     TestingModule,
     TypeOrmModule.forRootAsync({

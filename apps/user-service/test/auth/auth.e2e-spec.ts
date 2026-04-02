@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { appSetup } from '../../src/setup/app.setup';
+import { appSetup } from '../../../../libs/shared/src/setup/app.setup';
 
 describe('auth controller (e2e)', () => {
   interface AuthResponse {
